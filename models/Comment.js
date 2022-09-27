@@ -25,7 +25,7 @@ Comment.init(
     date_created: {
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: DataTypes.now,
+      defaultValue: DataTypes.NOW,
     },
     post_id: {
       type: DataTypes.INTEGER,
