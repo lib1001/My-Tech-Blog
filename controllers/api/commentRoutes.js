@@ -3,9 +3,7 @@ const { Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
 
 router.get('/', (req,res) => {
-    Comment.findAll({
-
-    })
+    Comment.findAll({})
     .then(commentData => res.json(commentData))
     .catch(err => {
         console.log(err);
@@ -13,20 +11,7 @@ router.get('/', (req,res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-    Comment.findAll({
-            where: {
-                id: req.params.id
-            }
-        })
-        .then(commentData => res.json(commentData))
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        })
-});
-
-router.post('/', async (req, res) => {
+router.post('/', withAuth, async (req, res) => {
   try {
     const newComment = await Comment.create({
       ...req.body,
@@ -43,7 +28,6 @@ router.delete('/:id', withAuth, async (req, res) => {
     const commentData = await Comment.destroy({
       where: {
         id: req.params.id,
-        user_id: req.session.user_id,
       },
     });
     if (!commentData) {
