@@ -9,12 +9,11 @@ const commentFormHandler = async function (event) {
 		await fetch('/api/comments', {
 			method: 'POST',
 			body: JSON.stringify({
-				post_id,
-				comment_content,
+				comment_content
 			}),
 			headers: {
 				'Content-Type': 'application/json'
-			}
+			},
 		});
 		document.location.reload();
 	}

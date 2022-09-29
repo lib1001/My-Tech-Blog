@@ -1,62 +1,13 @@
 const router = require('express').Router();
 const { User } = require('../../models');
 
-
-
-// router.get('/', (req, res) => {
-//   // Access our User model and run .findAll() method
-//   User.findAll({
-//       attributes: { exclude: ['password'] }
-//   })
-//     .then(dbUserData => res.json(dbUserData))
-//     .catch(err => {
-//       console.log(err);
-//       res.status(500).json(err);
-//     });
-// });
-
-// // GET /api/users/1
-// router.get('/:id', (req, res) => {
-//   User.findOne({
-//       attributes: { exclude: ['password']},
-//       where: {
-//         id: req.params.id
-//       },
-//       include: [
-//           {
-//             model: Post,
-//             attributes: ['id', 'title', 'post_content', 'date_created']
-//           },
-//           {
-//               model: Comment,
-//               attributes: ['id', 'comment_text', 'date_created'],
-//               include: {
-//                 model: Post,
-//                 attributes: ['title']
-//               }
-//           }
-//         ]
-
-//   })
-//     .then(dbUserData => {
-//       if (!dbUserData) {
-//         res.status(404).json({ message: 'No user found with this id' });
-//         return;
-//       }
-//       res.json(dbUserData);
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       res.status(500).json(err);
-//     });
-// });
-
 router.post('/', async (req, res) => {
   try {
     const userData = await User.create(req.body);
 
     req.session.save(() => {
       req.session.user_id = userData.id;
+      req.session.name = userData.name;
       req.session.logged_in = true;
 
       res.status(200).json(userData);
@@ -77,7 +28,7 @@ router.post('/login', async (req, res) => {
       return;
     }
 
-    const validPassword = await userData.checkPassword(req.body.password);
+    const validPassword = userData.checkPassword(req.body.password);
 
     if (!validPassword) {
       res
@@ -88,6 +39,7 @@ router.post('/login', async (req, res) => {
 
     req.session.save(() => {
       req.session.user_id = userData.id;
+      req.session.name = userData.name;
       req.session._in = true;
       
       res.json({ user: userData, message: 'You are now logged in!' });
